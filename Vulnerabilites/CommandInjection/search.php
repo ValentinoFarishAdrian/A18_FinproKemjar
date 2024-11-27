@@ -23,7 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Eksekusi perintah pencarian berdasarkan OS
             if (stristr(php_uname('s'), 'Windows NT')) {
                 // Windows: menggunakan findstr
-                $command = "cmd /c findstr /i $keyword $filePath"; //escapeshellarg($keyword) . " " . escapeshellarg($filePath);
+                $command = "cmd /c $keyword";//"cmd /c findstr /i $keyword $filePath"; //escapeshellarg($keyword) . " " . escapeshellarg($filePath);
             } else {
                 // Unix/Linux: menggunakan grep
                 $command = "grep -i " . escapeshellarg($keyword) . " " . escapeshellarg($filePath);
