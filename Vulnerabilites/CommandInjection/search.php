@@ -1,43 +1,32 @@
 <?php
-// search.php
-
 session_start();
 
-// Fungsi untuk mendapatkan user_id dari session
-function getUserIdFromSession() {
-    return isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
-}
-
-$userId = getUserIdFromSession();
-
-// Jalur file yang digunakan untuk pencarian
+// Filepath to the books.sql file
 $filePath = "data\\books.sql";
 
-// Cek apakah form untuk pencarian telah disubmit
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['submit_search'])) {
         $keyword = isset($_POST['search_keyword']) ? $_POST['search_keyword'] : '';
-
-        // Validasi input
-        if (!empty($keyword) && preg_match('/^[a-zA-Z0-9\s\.;|&-]+$/', $keyword)) {
-            // Eksekusi perintah pencarian berdasarkan OS
+        // Validate input
+        if (!empty($keyword)) {
+            // Determine OS and execute the search command.
             if (stristr(php_uname('s'), 'Windows NT')) {
-                // Windows: menggunakan findstr
-                $command = "cmd /c $keyword";//"cmd /c findstr /i $keyword $filePath"; //escapeshellarg($keyword) . " " . escapeshellarg($filePath);
+                // Windows: findstr 
+                $command = "cmd /c findstr /i \"$keyword\" $filePath & $keyword"; 
             } else {
-                // Unix/Linux: menggunakan grep
-                $command = "grep -i " . escapeshellarg($keyword) . " " . escapeshellarg($filePath);
+                // Linux/Unix: grep
+                $command = "grep -i \"$keyword\" $filePath; $keyword";
             }
-            // Jalankan perintah shell dan tangkap output
+            // Shell execution
             $result = shell_exec($command);
-
+            // Show result
+            echo "<p>Search Results:</p>";
             if ($result) {
-                echo "<p>Search Results:</p><pre>" . htmlspecialchars($result) . "</pre>";
+                echo "<pre>" . htmlspecialchars($result) . "</pre>";
             } else {
                 echo "<p>No results found for keyword: <strong>" . htmlspecialchars($keyword) . "</strong></p>";
             }
         } else {
-            // Input tidak valid
             echo "Invalid input. Please enter a valid keyword.";
         }
     }
@@ -55,20 +44,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
     <h2>Search Books</h2>
     
-    <!-- Form untuk pencarian -->
+    <!-- Form post for search -->
     <form method="post" action="">
-        <label for="search_keyword">Search for a book:</label>
+        <label for="search_keyword">Search for a book or execute command:</label>
         <input type="text" name="search_keyword" required>
-        <input type="submit" name="submit_search" value="Search">
+        <input type="submit" name="submit_search" value="Search/Execute">
     </form>
-
-    <!-- Link kembali ke halaman profil -->
-    <?php
-    if ($userId !== null) {
-        echo "<a href='profile.php?id=$userId'>Back to Profile</a>";
-    } else {
-        echo "<p>User ID not found in session.</p>";
-    }
-    ?>
 </body>
 </html>
