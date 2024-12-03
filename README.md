@@ -23,8 +23,6 @@ Start by cloning the project repository to your local machine:
 git clone https://github.com/ValentinoFarishAdrian/A18_FinproKemjar.git
 ```
 
-Replace `<repository_url>` with the actual URL of the GitHub repository.
-
 ### 2. Install XAMPP
 
 - Download and install XAMPP from [https://www.apachefriends.org/index.html](https://www.apachefriends.org/index.html).
