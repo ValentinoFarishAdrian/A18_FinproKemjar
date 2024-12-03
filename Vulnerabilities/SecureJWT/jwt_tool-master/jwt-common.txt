@@ -31,7 +31,7 @@ YoUR sUpEr S3krEt 1337 HMAC kEy HeRE
 ]V@IaC1%fU,DrVI
 `mix guardian.gen.secret`
 a43cc200a1bd292682598da42daa9fd14589f3d8bf832ffa206be775259ee1ea
-banana
+bananageming123
 bar
 c2a4eb068af8abef18d80b1689c7d785
 client_secret_basic

@@ -1,8 +1,10 @@
 <?php
-// Mengecek apakah cookie 'jwt' ada
 if (isset($_COOKIE['jwt'])) {
-    // Menghapus cookie jwt dengan flag HttpOnly dan Secure
-    setcookie("jwt", "", time() - 600, "/", "", true, true); // HttpOnly dan Secure diaktifkan
+    setcookie("jwt", "", time() - 600, "/", "", true, true);
+}
+
+if (isset($_COOKIE['refreshToken'])) {
+    setcookie("refreshToken", "", time() - 600, "/", "", true, true);
 }
 ?>
 
@@ -14,7 +16,6 @@ if (isset($_COOKIE['jwt'])) {
     <link rel="stylesheet" href="style/style.css">
     <title>Logout</title>
     <script>
-        // Redirect after 3 seconds
         setTimeout(() => {
             window.location.href = 'auth.php';
         }, 3000);
@@ -35,6 +36,5 @@ if (isset($_COOKIE['jwt'])) {
         if (countdown <= 0) window.location.href = 'auth.php';
     }, 1000);
 </script>
-
 </body>
 </html>

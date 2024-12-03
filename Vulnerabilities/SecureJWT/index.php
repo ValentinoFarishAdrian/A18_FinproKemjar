@@ -5,14 +5,48 @@ require_once 'vendor/autoload.php';
 use \Firebase\JWT\JWT;
 use \Firebase\JWT\Key;
 
+function regenerateAccessToken($refreshToken) {
+    try {
+        $publicKey = file_get_contents(PUBLIC_KEY_PATH);
+        $decoded = JWT::decode($refreshToken, new Key($publicKey, 'RS256'));
+
+        // Buat Access Token baru
+        $issuedAt = time();
+        $newAccessExpiration = $issuedAt + TOKEN_EXPIRATION;
+
+        $newAccessPayload = [
+            "iat" => $issuedAt,
+            "exp" => $newAccessExpiration,
+            "username" => $decoded->username
+        ];
+
+        $privateKey = file_get_contents(PRIVATE_KEY_PATH);
+        $newAccessToken = JWT::encode($newAccessPayload, $privateKey, 'RS256');
+
+        setcookie("jwt", $newAccessToken, $newAccessExpiration, "/", "", true, true);
+        return $decoded->username;
+    } catch (Exception $e) {
+        return null;
+    }
+}
+
 if (isset($_COOKIE['jwt'])) {
     $jwt = $_COOKIE['jwt'];
     try {
-        $decoded = JWT::decode($jwt, new Key(SECRET_KEY, 'HS256'));
+        $publicKey = file_get_contents(PUBLIC_KEY_PATH);
+        $decoded = JWT::decode($jwt, new Key($publicKey, 'RS256'));
         $username = htmlspecialchars($decoded->username);
     } catch (Exception $e) {
-        header("Location: auth.php");
-        exit;
+        if (isset($_COOKIE['refreshToken'])) {
+            $username = regenerateAccessToken($_COOKIE['refreshToken']);
+            if (!$username) {
+                header("Location: auth.php");
+                exit;
+            }
+        } else {
+            header("Location: auth.php");
+            exit;
+        }
     }
 } else {
     header("Location: auth.php");

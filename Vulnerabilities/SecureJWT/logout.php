@@ -1,6 +1,11 @@
 <?php
-// Menghapus cookie 'jwt' tanpa pengamanan
-setcookie("jwt", "", time() - 600, "/");
+if (isset($_COOKIE['jwt'])) {
+    setcookie("jwt", "", time() - 600, "/", "", true, true);
+}
+
+if (isset($_COOKIE['refreshToken'])) {
+    setcookie("refreshToken", "", time() - 600, "/", "", true, true);
+}
 ?>
 
 <!DOCTYPE html>
@@ -11,7 +16,6 @@ setcookie("jwt", "", time() - 600, "/");
     <link rel="stylesheet" href="style/style.css">
     <title>Logout</title>
     <script>
-        // Redirect after 3 seconds
         setTimeout(() => {
             window.location.href = 'auth.php';
         }, 3000);
@@ -32,6 +36,5 @@ setcookie("jwt", "", time() - 600, "/");
         if (countdown <= 0) window.location.href = 'auth.php';
     }, 1000);
 </script>
-
 </body>
 </html>

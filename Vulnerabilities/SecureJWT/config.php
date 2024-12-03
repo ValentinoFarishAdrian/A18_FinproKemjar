@@ -1,4 +1,5 @@
 <?php
-define('SECRET_KEY', 'banana');
-define('TOKEN_EXPIRATION', 600); // Token expires in 10 minutes
+define('TOKEN_EXPIRATION', 600); // 10 menit
+define('REFRESH_TOKEN_EXPIRATION', 2592000); // 30 hari
+define('SECRET_KEY', 'bananageming123'); // Gantilah dengan secret key yang aman
 ?>

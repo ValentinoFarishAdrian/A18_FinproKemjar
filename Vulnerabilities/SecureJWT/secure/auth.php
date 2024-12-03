@@ -8,20 +8,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    // Validasi username dan password dari database
     if ($username == 'beres' && $password == 'kemjar123') {
         $issuedAt = time();
-        $expirationTime = $issuedAt + TOKEN_EXPIRATION;
-        $payload = [
+        $accessTokenExpiration = $issuedAt + TOKEN_EXPIRATION;
+        $refreshTokenExpiration = $issuedAt + (TOKEN_EXPIRATION * 5); // Refresh token valid lebih lama
+
+        // Payload Access Token
+        $accessPayload = [
             "iat" => $issuedAt,
-            "exp" => $expirationTime,
+            "exp" => $accessTokenExpiration,
+            "username" => $username
+        ];
+
+        // Payload Refresh Token
+        $refreshPayload = [
+            "iat" => $issuedAt,
+            "exp" => $refreshTokenExpiration,
             "username" => $username
         ];
 
         $privateKey = file_get_contents(PRIVATE_KEY_PATH);
-        $jwt = JWT::encode($payload, $privateKey, 'RS256');
-        
-        setcookie("jwt", $jwt, $expirationTime, "/");
+
+        // Generate Access Token
+        $accessToken = JWT::encode($accessPayload, $privateKey, 'RS256');
+
+        // Generate Refresh Token
+        $refreshToken = JWT::encode($refreshPayload, $privateKey, 'RS256');
+
+        // Set cookies
+        setcookie("jwt", $accessToken, $accessTokenExpiration, "/", "", true, true);
+        setcookie("refreshToken", $refreshToken, $refreshTokenExpiration, "/", "", true, true);
+
         header("Location: index.php");
         exit;
     } else {
