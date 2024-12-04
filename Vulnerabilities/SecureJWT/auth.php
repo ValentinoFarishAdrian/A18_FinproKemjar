@@ -8,18 +8,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
+    // Validasi login sederhana
     if ($username == 'beres' && $password == 'kemjar123') {
         $issuedAt = time();
-        $expirationTime = $issuedAt + TOKEN_EXPIRATION;  
+        $expirationTime = $issuedAt + TOKEN_EXPIRATION; // Contoh TOKEN_EXPIRATION di config.php
         $payload = array(
             "iat" => $issuedAt,
             "exp" => $expirationTime,
-            "username" => $username
+            "username" => $username,
+            "role" => "user" // Menambahkan role admin
         );
 
-        $jwt = JWT::encode($payload, SECRET_KEY, 'HS256');
+        // Membuat token JWT
+        $jwt = JWT::encode($payload, SECRET_KEY, 'HS256'); // SECRET_KEY dari config.php
+
+        // Set cookie dengan token JWT
         setcookie("jwt", $jwt, $expirationTime, "/");
-        header("Location: index.php");
+        header("Location: index.php"); // Redirect setelah login sukses
         exit;
     } else {
         $error = "Invalid credentials! Please try again.";

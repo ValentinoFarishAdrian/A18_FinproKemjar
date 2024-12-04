@@ -18,14 +18,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $accessPayload = [
             "iat" => $issuedAt,
             "exp" => $accessTokenExpiration,
-            "username" => $username
+            "username" => $username,
+            "role" => "user" // Menambahkan role admin
         ];
 
         // Payload Refresh Token
         $refreshPayload = [
             "iat" => $issuedAt,
             "exp" => $refreshTokenExpiration,
-            "username" => $username
+            "username" => $username,
+            "role" => "user" // Menambahkan role admin
         ];
 
         $privateKey = file_get_contents(PRIVATE_KEY_PATH);
@@ -48,6 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
